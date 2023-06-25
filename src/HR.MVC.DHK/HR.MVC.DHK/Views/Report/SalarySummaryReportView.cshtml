@@ -1,0 +1,40 @@
+﻿@model List<HR.MVC.DHK.Models.VM.SalarySummaryReport>
+
+@{
+    ViewData["Title"] = "Salary Summary Report";
+}
+
+<h1>Salary Summary Report</h1>
+
+<div class="container-fluid">
+    <table class="table table-striped">
+        <thead>
+            <tr class="bg-warning">
+                <th>Company Name</th>
+                <th>Department Name</th>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Gross Payment</th>
+                <th>Absent Amount</th>
+                <th>Net Payment</th>
+                <th>Paid Amount</th>
+                <th>Due Payment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model){
+            <tr>
+                <td>@item.ComName</td>
+                <td>@item.DeptName</td>
+                <td>@item.dtYear</td>
+                <td>@item.dtMonth</td>
+                <td>@item.GrossPayment</td>
+                <td>@item.AbsentAmount</td>
+                <td>@item.NetPayment</td>
+                <td>@item.PaidAmount</td>
+                <td>@item.DuePayment</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,57 @@
+﻿@model HR.MVC.DHK.Models.Employee
+
+@*@{
+    ViewData["Title"] = "Create Employee";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+
+<div class="container">
+    <h2>Create Employee</h2>
+    <form asp-action="Create" class="form-horizontal" role="form">
+        <div class="form-group">
+            <label class="control-label col-md-2" for="EmpCode">Employee Code:</label>
+            <div class="col-md-4">
+                <input type="text" class="form-control" id="EmpCode" name="EmpCode" placeholder="Enter employee code" @*value="@Model.EmpCode"*@ required />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2" for="EmpName">Employee Name:</label>
+            <div class="col-md-4">
+                <input type="text" class="form-control" id="EmpName" name="EmpName" placeholder="Enter employee name" @*value="@Model.EmpName"*@ required />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2" for="Gender">Gender:</label>
+            <div class="col-md-4">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="Gender" name="Gender" value="Male" @*@(Model.Gender == "Male" ? "checked" : "")*@ /> Male
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="Gender" name="Gender" value="Female" @*@(Model.Gender == "Female" ? "checked" : "") *@ /> Female
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2" for="ComId">Company:</label>
+            <div class="col-md-4">
+                <select class="form-control" id="ComId" name="ComId" required>
+                    <option value="">Select a company</option>
+                    @*@foreach (var company in ViewBag.Companies)
+                    {
+                        <option value="@company.ComId" @(Model.ComId == company.ComId ? "selected" : "")>@company.CompanyName</option>
+                    }*@
+                </select>
+            </div>
+        </div>
+        <!-- Add other form fields as needed -->
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+        </form>

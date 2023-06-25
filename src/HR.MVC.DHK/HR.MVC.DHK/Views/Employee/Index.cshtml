@@ -1,0 +1,40 @@
+﻿@model IEnumerable<HR.MVC.DHK.Models.Employee>
+
+@{
+    ViewData["Title"] = "Employee List";
+}
+
+<div class="container">
+    <h2>Employee List</h2>
+
+    <table class="table">
+
+        <a href="@Url.Action("Create", "Employee")" class="btn btn-primary">Create New Employee</a>
+        <thead>
+            <tr>
+                <th>Employee Code</th>
+                <th>Name</th> 
+                <th>Department</th>
+                <th>Company</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in Model)
+            {
+                <tr>
+                    <td>@employee.EmpCode</td>
+                    <td>@employee.EmpName</td>
+                    <td>@employee.Department.DeptName</td>
+                    <td>@employee.Company.ComName</td>
+                    <td>
+                        <a href="@Url.Action("Edit", new { EmpId = employee.EmpId })" class="btn btn-primary">Edit</a>
+                        <a href="@Url.Action("Details", new { EmpId = employee.EmpId })" class="btn btn-info">Details</a>
+                        <a href="@Url.Action("Delete",  new { EmpId = employee.EmpId })" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

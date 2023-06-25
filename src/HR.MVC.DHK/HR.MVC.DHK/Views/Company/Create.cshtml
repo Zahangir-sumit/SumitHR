@@ -1,0 +1,51 @@
+﻿@model HR.MVC.DHK.Models.Company
+
+@{
+    ViewData["Title"] = "CreateCompany";
+}
+
+<h1>Create Company</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post">
+                <div class="form-group">
+                    <label asp-for="ComName">Company Name</label>
+                    <input asp-for="ComName" class="form-control" />
+                    <span asp-validation-for="ComName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Basic">Basic</label>
+                    <input asp-for="Basic" class="form-control" />
+                    <span asp-validation-for="Basic" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Hrent">Hrent</label>
+                    <input asp-for="Hrent" class="form-control" />
+                    <span asp-validation-for="Hrent" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Medical">Medical</label>
+                    <input asp-for="Medical" class="form-control" />
+                    <span asp-validation-for="Medical" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input asp-for="IsInactive" /> Is Inactive
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
