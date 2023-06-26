@@ -1,10 +1,11 @@
 ﻿
+using HR.MVC.DHK.Models.IEntity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HR.MVC.DHK.Models
 {
-    public class Employee
+    public class Employee 
     {
 
         public Guid EmpId { get; set; }

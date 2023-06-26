@@ -14,8 +14,8 @@
             <tr>
                 <th>Employee Code</th>
                 <th>Name</th> 
-                <th>Department</th>
-                <th>Company</th>
+                <th>Gross</th> 
+
                 <th>Actions</th>
             </tr>
         </thead>
@@ -25,8 +25,8 @@
                 <tr>
                     <td>@employee.EmpCode</td>
                     <td>@employee.EmpName</td>
-                    <td>@employee.Department.DeptName</td>
-                    <td>@employee.Company.ComName</td>
+                    <td>@employee.Gross</td>
+
                     <td>
                         <a href="@Url.Action("Edit", new { EmpId = employee.EmpId })" class="btn btn-primary">Edit</a>
                         <a href="@Url.Action("Details", new { EmpId = employee.EmpId })" class="btn btn-info">Details</a>

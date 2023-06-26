@@ -1,26 +1,28 @@
 ﻿using HR.MVC.DHK.Models;
 using HR.MVC.DHK.Persistence;
+using HR.MVC.DHK.RepositoryPattern;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace HR.MVC.DHK.Controllers
 {
-    public class EmployeeController : Controller
+    public class EmployeeController : BaseController
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<EmployeeController> _logger;
 
-        public EmployeeController(ApplicationDbContext context, ILogger<EmployeeController> logger)
+        public EmployeeController(IUnitOfWork unitOfWork, ApplicationDbContext context, ILogger<EmployeeController> logger):base(unitOfWork)
         {
             _context = context;
             _logger = logger;
         }
         public async Task<IActionResult> Index()
         {
-            var employees = await _context.Employee
-                                .Include(c => c.Company)
-                                .Include(d => d.Department)
-                                .ToListAsync();
+            //IList<Employee> ems= _unitOfWork.Employee.GetAll();
+            var employees = await _unitOfWork.Employee
+                                //.Include(c => c.Company)
+                                //.Include(d => d.Department)
+                                .GetAllAsync();
             return View(employees);
         }
 
@@ -28,7 +30,7 @@ namespace HR.MVC.DHK.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEmployees()
         {
-            var employees = await _context.Employee.ToListAsync();
+            var employees = await _unitOfWork.Employee.GetAllAsync();
             return Json(employees);
         }
 
@@ -53,7 +55,7 @@ namespace HR.MVC.DHK.Controllers
             data.EmpId = id;
             try
             {
-                _context.Employee.Add(data);
+                _unitOfWork.Employee.Add(data);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -64,9 +66,10 @@ namespace HR.MVC.DHK.Controllers
             return RedirectToAction("Index", "Employee");
         }
 
-        public IActionResult Edit(Guid EmpId)
+        public async Task<IActionResult> Edit(Guid EmpId)
         {
-            var Employee = _context.Employee.Where(x => x.EmpId == EmpId).FirstOrDefault();
+            var Employee = await _unitOfWork.Employee.Where(x => x.EmpId == EmpId);
+
             if (Employee != null)
             {
                 ViewBag.Companies = _context.Company.ToList();
