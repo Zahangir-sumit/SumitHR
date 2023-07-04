@@ -1,19 +1,21 @@
 ﻿using HR.MVC.DHK.Models;
 using HR.MVC.DHK.Persistence;
+using HR.MVC.DHK.RepositoryPattern;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace HR.MVC.DHK.Controllers
 {
-    public class AttendanceController : Controller
+    public class AttendanceController : BaseController
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<CompanyController> _logger;
 
-        public AttendanceController(ApplicationDbContext context, ILogger<CompanyController> logger)
+        public AttendanceController(IUnitOfWork unitOfWork, ApplicationDbContext context, ILogger<CompanyController> logger) : base(unitOfWork)
         {
             _context = context;
             _logger = logger;
@@ -22,48 +24,14 @@ namespace HR.MVC.DHK.Controllers
         {
 
 
-
-
-            ViewBag.Companies = _context.Company.ToList();  
+            ViewBag.Companies = _unitOfWork.Company.GetAll();  
             return View();
         }
 
         public IActionResult Create()
-
         {
 
-            //Guid comId = new Guid("EFD77A31-BBF2-486C-ED17-08DB748B62F4");
-            //Guid empId = new Guid("E6724B4E-8393-4044-98DF-85B3DB7820BD");
-            //Guid salId = Guid.NewGuid();
-            //var com = _context.Company.Where(x => x.ComId == comId).FirstOrDefault();
-            //var emp = _context.Employee.Where(x => x.EmpId == empId).FirstOrDefault();
-
-
-
-            //Salary sal = new Salary
-            //{
-            //    Id = salId,
-            //    Company = com,
-            //    Employee = emp,
-            //    Gross = 50000,
-            //    Basic = 25000,
-            //    Hrent = 15000,
-            //    Medical = 10000,
-            //    AbsentAmount = 0,
-            //    IsPaid = true,
-            //    PaidAmount = 50000,
-            //    DtYear = 2023,
-            //    DtMonth = 4,
-            //    PayableAmount = 50000
-            //};
-
-
-
-            //_context.Salary.Add(sal);
-            //_context.SaveChanges();
-
-
-            ViewBag.Companies = _context.Company.ToList();
+            ViewBag.Companies = _unitOfWork.Company.GetAll();
             return View();
         }
 
@@ -79,8 +47,8 @@ namespace HR.MVC.DHK.Controllers
 
             try
             {
-                _context.Attendance.Add(attendance);
-                _context.SaveChanges();
+                _unitOfWork.Attendance.Add(attendance);
+                _unitOfWork.Save();
 
             }
             catch (Exception ex)
@@ -90,18 +58,12 @@ namespace HR.MVC.DHK.Controllers
 
 
             return RedirectToAction("Index", "Attendance");
-
-
-
-
-
-            return View();
         }
 
         public IActionResult AttendanceProcess()
         {
 
-            ViewBag.Companies = _context.Company.ToList();
+            ViewBag.Companies = _unitOfWork.Company.GetAll();
 
             return View();
         }
@@ -110,14 +72,8 @@ namespace HR.MVC.DHK.Controllers
         [HttpPost]
         public async Task<IActionResult> AttendanceProcess(AttProcess attProcess)
         {
-            var SpParameter = new List<SqlParameter>();
-            SpParameter.Add(new SqlParameter("@ComId", attProcess.ComId));
-            SpParameter.Add(new SqlParameter("@dtDate", attProcess.DtDate));
 
-
-            var result = await Task.Run(() => _context.Database
-            .ExecuteSqlRawAsync(@"exec UpdateAttendanceStatus @ComId, @dtDate", SpParameter.ToArray()));
-
+            await _unitOfWork.Attendance.Process(attProcess);
             return RedirectToAction("Index", "Home");
         }
         public IActionResult MonthlyAttendanceProcess()
@@ -132,7 +88,7 @@ namespace HR.MVC.DHK.Controllers
 
             ViewBag.MonthOptions = monthOptions;
 
-            ViewBag.Companies = _context.Company.ToList();
+            ViewBag.Companies = _unitOfWork.Company.GetAll();
 
             return View();
         }
@@ -141,19 +97,7 @@ namespace HR.MVC.DHK.Controllers
         public async Task<IActionResult> MonthlyAttendanceProcess(MonthlyAttProcess monthlyAttProcess)
         {
 
-
-            Guid Id = Guid.NewGuid();
-            Guid SalId = Guid.NewGuid();
-
-
-            var SpParameter = new List<SqlParameter>();
-            SpParameter.Add(new SqlParameter("@ComId", monthlyAttProcess.ComId));
-            SpParameter.Add(new SqlParameter("@Month", monthlyAttProcess.DtMonth));
-            SpParameter.Add(new SqlParameter("@Year", monthlyAttProcess.DtYear));
-
-
-            var result = await Task.Run(() => _context.Database
-            .ExecuteSqlRawAsync(@"exec monthlyAttendance @ComId,@Month, @Year", SpParameter.ToArray()));
+            await _unitOfWork.Attendance.MonthlyProcess(monthlyAttProcess);
 
             return RedirectToAction("Index", "Home");
         }

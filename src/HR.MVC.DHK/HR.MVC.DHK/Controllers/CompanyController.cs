@@ -1,31 +1,32 @@
 ﻿
 using HR.MVC.DHK.Models;
 using HR.MVC.DHK.Persistence;
+using HR.MVC.DHK.RepositoryPattern;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HR.MVC.DHK.Controllers
 {
-    public class CompanyController : Controller
+    public class CompanyController : BaseController
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
         private readonly ILogger<CompanyController> _logger;
 
-        public CompanyController(ApplicationDbContext context, ILogger<CompanyController> logger)
+        public CompanyController(IUnitOfWork unitOfWork, ApplicationDbContext context, ILogger<CompanyController> logger):base(unitOfWork)
         {
-            _context = context;
+            //_context = context;
             _logger = logger;
         }
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Company.ToListAsync());
+            return View(await _unitOfWork.Company.GetAllAsync());
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCompanies()
         {
-            return Json(await _context.Company.ToListAsync());
+            return Json(await _unitOfWork.Company.GetAllAsync());
         }
 
         [HttpGet]
@@ -39,8 +40,8 @@ namespace HR.MVC.DHK.Controllers
         {
                 try
                 {
-                    _context.Company.Add(data);
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.Company.Add(data);
+                    _unitOfWork.Save();
                 }
                 catch (Exception ex)
                 {
@@ -52,7 +53,7 @@ namespace HR.MVC.DHK.Controllers
 
         public IActionResult Edit(Guid id)
         {
-            var Company = _context.Company.Find(id);
+            var Company = _unitOfWork.Company.GetById(id);
             if (Company != null)
             {
                 return View(Company);
@@ -71,11 +72,8 @@ namespace HR.MVC.DHK.Controllers
                 {
                     await Task.Run(() =>
                     {
-                        _context.Company.Update(data);
-
-                        _context.Entry(data).State = EntityState.Modified;
-
-                        _context.SaveChangesAsync();
+                        _unitOfWork.Company.EditAsync(data);
+                        _unitOfWork.Save();
                     });
                 }
                 catch (Exception ex)

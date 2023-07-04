@@ -6,7 +6,7 @@ namespace HR.MVC.DHK.Models
 {
     public class Salary
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } 
         [Required]
         public Guid ComId { get; set; }
 

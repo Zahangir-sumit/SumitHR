@@ -2,7 +2,7 @@
 
 namespace HR.MVC.DHK.RepositoryPattern.IRepositories
 {
-    public interface ICompanyRepository : IRepository<Company, Guid>
+    public interface IShiftRepository : IRepository<Shift, Guid>
     {
     }
 }

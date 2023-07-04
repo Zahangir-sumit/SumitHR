@@ -5,7 +5,7 @@ namespace HR.MVC.DHK.Models
 {
     public class Shift
     {
-        public Guid ShiftId { get; set; }
+        public Guid ShiftId { get; set; } = Guid.NewGuid();
         [Required]
         [StringLength(30)]
         public string ShiftName { get; set; }

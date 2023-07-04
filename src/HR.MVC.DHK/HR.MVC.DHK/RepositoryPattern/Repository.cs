@@ -789,5 +789,10 @@ namespace HR.MVC.DHK.RepositoryPattern
 
             return result;
         }
+
+        public TEntity FindWhere(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _dbSet.Where(predicate).FirstOrDefault();
+        }
     }
 }

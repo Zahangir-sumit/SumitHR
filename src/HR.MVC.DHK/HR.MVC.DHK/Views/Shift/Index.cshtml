@@ -30,7 +30,7 @@
                     <td>@shift.ShiftLate</td>
                     <td>
                         <a href="@Url.Action("EditShift", "Shift", new { id = shift.ShiftId })" class="btn btn-primary">Edit</a>
-                        <a href="@Url.Action("DeleteShift", "Shift", new { id = shift.ShiftId })" class="btn btn-danger">Delete</a>
+                        <a href="@Url.Action("Delete", "Shift", new { id = shift.ShiftId })" class="btn btn-danger">Delete</a>
                     </td>
                 </tr>
             }

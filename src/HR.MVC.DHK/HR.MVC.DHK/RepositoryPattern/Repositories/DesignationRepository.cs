@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HR.MVC.DHK.RepositoryPattern.Repositories
 {
-    public class CompanyRepository : Repository<Company, Guid>, ICompanyRepository
+    public class DesignationRepository : Repository<Designation, Guid>, IDesignationRepository
     {
-        public CompanyRepository(ApplicationDbContext context) : base(context)
+        public DesignationRepository(ApplicationDbContext context) : base(context)
         {
         }
+
     }
 }

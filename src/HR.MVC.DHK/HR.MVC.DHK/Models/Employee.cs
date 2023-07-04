@@ -8,7 +8,7 @@ namespace HR.MVC.DHK.Models
     public class Employee 
     {
 
-        public Guid EmpId { get; set; }
+        public Guid EmpId { get; set; } = Guid.NewGuid();
 
         [Required]
         [StringLength(50)]

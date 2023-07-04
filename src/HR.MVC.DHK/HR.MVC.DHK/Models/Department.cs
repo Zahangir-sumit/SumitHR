@@ -6,7 +6,7 @@ namespace HR.MVC.DHK.Models
 {
     public class Department
     {
-        public Guid DeptId { get; set; }
+        public Guid DeptId { get; set; } = Guid.NewGuid();
         [Required]
         [StringLength(30)]
         public string DeptName { get; set; }

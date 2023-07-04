@@ -8,7 +8,12 @@ namespace HR.MVC.DHK.RepositoryPattern
         #region Repositories
 
         IEmployeeRepository Employee { get; }
-
+        ICompanyRepository Company { get; }
+        IDepartmentRepository Department { get; }
+        IDesignationRepository Designation { get; }
+        IShiftRepository Shift { get; }
+        IAttendanceRepository Attendance { get; }
+        IReportRepository Report { get; }
 
 
 

@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HR.MVC.DHK.RepositoryPattern.Repositories
 {
-    public class CompanyRepository : Repository<Company, Guid>, ICompanyRepository
+    public class ShiftRepository : Repository<Shift, Guid>, IShiftRepository
     {
-        public CompanyRepository(ApplicationDbContext context) : base(context)
+        public ShiftRepository(ApplicationDbContext context) : base(context)
         {
         }
     }

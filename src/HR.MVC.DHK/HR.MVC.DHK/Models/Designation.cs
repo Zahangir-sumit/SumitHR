@@ -6,7 +6,7 @@ namespace HR.MVC.DHK.Models
 {
     public class Designation
     {
-        public Guid DesigId { get; set; }
+        public Guid DesigId { get; set; } = Guid.NewGuid();
 
         [Required]
         [StringLength(30)]

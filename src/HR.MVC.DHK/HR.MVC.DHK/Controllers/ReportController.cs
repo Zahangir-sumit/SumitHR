@@ -10,15 +10,16 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Security.Cryptography;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Data;
+using HR.MVC.DHK.RepositoryPattern;
 
 namespace HR.MVC.DHK.Controllers
 {
-    public class ReportController : Controller
+    public class ReportController : BaseController
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<ReportController> _logger;
 
-        public ReportController(ApplicationDbContext context, ILogger<ReportController> logger)
+        public ReportController(IUnitOfWork unitOfWork, ApplicationDbContext context, ILogger<ReportController> logger) :base(unitOfWork)
         {
             _context = context;
             _logger = logger;
@@ -37,6 +38,8 @@ namespace HR.MVC.DHK.Controllers
             ViewBag.Companies = _context.Company.ToList();
             return View();
         }
+
+
         [HttpPost]
         public IActionResult Report(SalaryRptDTO salaryRptDTO)
         {
@@ -55,88 +58,57 @@ namespace HR.MVC.DHK.Controllers
         public async Task<IActionResult> SalaryReportView(SalaryRptDTO salaryRptDTO)
         {
 
-            var comIdParam = new SqlParameter("@ComId", SqlDbType.UniqueIdentifier) { Value = salaryRptDTO.ComId };
-            var dateParam = new SqlParameter("@Date", SqlDbType.Date) { Value = salaryRptDTO.Date };
-            var typeParam = new SqlParameter("@Type", SqlDbType.Int) { Value = 0 };
-            var departmentIdParam = new SqlParameter("@DepartmentID", SqlDbType.UniqueIdentifier) { Value = DBNull.Value };
-            var designationIdParam = new SqlParameter("@DesignationID", SqlDbType.UniqueIdentifier) { Value = DBNull.Value };
-            var isPaidParam = new SqlParameter("@IsPaid", SqlDbType.Bit) { Value = false };
 
-
-
-            //string Procedure = "FilterSalaryTable @ComId, @date, @Type, @DepartmentID, @DesignationID";
-
-            ////var SpParameter = new List<SqlParameter>();
-            //var ComId = new SqlParameter("@ComId", salaryRptDTO.ComId);
-            //var date = new SqlParameter("@date", salaryRptDTO.Date);
-            //var type = new SqlParameter("@Type", Type);
-            //var DepartmentID = new SqlParameter("@DepartmentID", salaryRptDTO.DeptId);
-            //DepartmentID.Value = DBNull.Value;
-            //var DesignationID = new SqlParameter("@DesignationID", salaryRptDTO.DesigId);
-            //DesignationID.Value = DBNull.Value;
-
-            //var IsPdaid = new SqlParameter("@IsPdaid", salaryRptDTO.IsPaid);
-
-            //var results = _context.Set<Dictionary<string, object>>()
-            //    .FromSqlRaw(Procedure, ComId, date, type, DepartmentID, DesignationID, IsPdaid)
-            //    .ToList();
-
-
-            //var result = await Task.Run(() => _context.Database
-            //.ExecuteSqlRawAsync(@"exec FilterSalaryTable @ComId, @date, @Type, @DepartmentID, @DesignationID", SpParameter.ToArray()));
-            //var results = _context.Database.ExecuteSqlRawAsync("FilterSalaryTable @ComId, @date, @Type, @DepartmentID, @DesignationID",SpParameter);
-            //List<SalaryReport> SalaryList =  _context.SalaryReport.FromSqlRaw(Procedure, ComId, date, type, DepartmentID, DesignationID).ToList();
-            //List<SalaryReport> SalaryList =  _context.SalaryReport.FromSqlRaw(Procedure, ComId, date, type, DepartmentID, DesignationID, IsPdaid)
-            //        .AsEnumerable()
-            //        .Where(s => s.IsPaid == false)
-            //        .ToList();
-
-
-
-
-            var SalaryList = _context.SalaryReport.FromSqlRaw("EXEC FilterSalaryTable @ComId, @Date,@Type, @DepartmentID, @DesignationID, @IsPaid",
-                comIdParam, dateParam, typeParam, departmentIdParam, designationIdParam, isPaidParam).ToList();
-
-
-            //    var SpParameter = new[]
-            //    {
-            //    new SqlParameter("@ComId", salaryRptDTO.ComId),
-            //    new SqlParameter("@date", salaryRptDTO.Date),
-            //    new SqlParameter("@Type", Type),
-            //    new SqlParameter("@DepartmentID", salaryRptDTO.DeptId),
-            //    new SqlParameter("@DesignationID", salaryRptDTO.DesigId),
-            //    new SqlParameter("@IsPdaid", salaryRptDTO.IsPaid)
-
-            //     };
-
-
-            //var SalaryList = _context.SalaryReport.FromSqlRaw(Procedure, SpParameter).ToList();
+            var SalaryList = await _unitOfWork.Report.SalaryReportView(salaryRptDTO);
 
             return View(SalaryList);
         }
 
 
 
-        public IActionResult SalarySummaryReportView(SalaryRptDTO salaryRptDTO)
+        public async Task<IActionResult> SalarySummaryReportView(SalaryRptDTO salaryRptDTO)
+        {
+
+            var SalarySummaries = await _unitOfWork.Report.SalarySummaryReportView(salaryRptDTO);
+
+            return View(SalarySummaries);
+        }
+        public IActionResult AttendanceReport()
+        {
+
+            ViewBag.Companies = _unitOfWork.Company.GetAll();
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AttendtanceReportView(AttendanceParameters AttendanceParameters)
+        {
+            if (AttendanceParameters.AttendanceType == "Daily")
+            {
+                return RedirectToAction("DailyAttendtanceReport", AttendanceParameters);
+            }
+            else
+            {
+                return RedirectToAction("MonthlyAttendtanceReport", AttendanceParameters);
+            }
+        }
+        public async Task<IActionResult> DailyAttendtanceReport(AttendanceParameters AttendanceParameters)
         {
 
 
-            var comIdParam = new SqlParameter("@ComId", SqlDbType.UniqueIdentifier) { Value = salaryRptDTO.ComId };
-            var dateParam = new SqlParameter("@Date", SqlDbType.Date) { Value = salaryRptDTO.Date };
-            var typeParam = new SqlParameter("@Type", SqlDbType.Int) { Value = 1 };
-            var departmentIdParam = new SqlParameter("@DepartmentID", SqlDbType.UniqueIdentifier) { Value = DBNull.Value };
-            var designationIdParam = new SqlParameter("@DesignationID", SqlDbType.UniqueIdentifier) { Value = DBNull.Value };
-            var isPaidParam = new SqlParameter("@IsPaid", SqlDbType.Bit) { Value = false };
+            var DailyAttendances = await _unitOfWork.Report.DailyAttendtanceReport(AttendanceParameters);
+
+            return View(DailyAttendances);
+        }
 
 
-            var SalarySummaries = _context.SalarySummaryReport.FromSqlRaw("EXEC FilterSalaryTable @ComId, @Date,@Type, @DepartmentID, @DesignationID, @IsPaid",
-                comIdParam, dateParam, typeParam, departmentIdParam, designationIdParam, isPaidParam).ToList();
-            //type = new SqlParameter("@Type", Type);
 
-            // List<SalarySummaryReport> SalarySummaryList = _context.SalarySummaryReport.FromSqlRaw(Procedure, ComId, date, type, DepartmentID, DesignationID).ToList();
+        public async Task<IActionResult> MonthlyAttendtanceReport(AttendanceParameters AttendanceParameters)
+        {
 
-            // Redirect to another action or view
-            return View(SalarySummaries);
+            var MonthlyAttendances = await _unitOfWork.Report.MonthlyAttendtanceReport(AttendanceParameters);
+
+            return View(MonthlyAttendances);
         }
 
     }

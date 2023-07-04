@@ -210,5 +210,7 @@ namespace HR.MVC.DHK.Persistence
         public DbSet<Shift> Shift { get; set; }
         public DbSet<SalaryReport> SalaryReport { get; set; }
         public DbSet<SalarySummaryReport> SalarySummaryReport { get; set; }
+        public DbSet<DailyAttendance> DailyAttendances { get; set; }
+        public DbSet<MonthlyAttendance> MonthlyAttendances { get; set; }
     }
 }

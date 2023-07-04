@@ -30,7 +30,7 @@
                     <td>
                         <a href="@Url.Action("Edit", new { EmpId = employee.EmpId })" class="btn btn-primary">Edit</a>
                         <a href="@Url.Action("Details", new { EmpId = employee.EmpId })" class="btn btn-info">Details</a>
-                        <a href="@Url.Action("Delete",  new { EmpId = employee.EmpId })" class="btn btn-danger">Delete</a>
+                        <a href="@Url.Action("Delete",  new { EmpId = employee.EmpId })" class="btn btn-danger" data-dismiss="modal">Delete</a>
                     </td>
                 </tr>
             }

@@ -12,6 +12,7 @@ namespace HR.MVC.DHK.RepositoryPattern
         void Remove(TEntity entityToRemove);
         void Remove(Expression<Func<TEntity, bool>> filter);
         Task<IEnumerable<TEntity>> Where(Expression<Func<TEntity, bool>> predicate);
+        TEntity FindWhere(Expression<Func<TEntity, bool>> predicate);
         Task AddAsync(TEntity entityToAdd);
         Task EditAsync(TEntity entityToEdit);
         Task RemoveAsync(TKey id);

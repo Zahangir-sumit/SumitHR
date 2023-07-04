@@ -23,6 +23,8 @@
 
                     <td>
                         <a href="@Url.Action("Edit", new { DesigId = Designation.DesigId, ComId = Designation.ComId })" class="btn btn-primary">Edit</a>
+                        <a href="@Url.Action("Delete", "Department", new { id = Designation.DesigId })" class="btn btn-danger">Delete</a>
+
                     </td>
                 </tr>
             }

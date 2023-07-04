@@ -1,6 +1,7 @@
 ﻿
 using HR.MVC.DHK.Models;
 using HR.MVC.DHK.Persistence;
+using HR.MVC.DHK.RepositoryPattern;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,45 +9,42 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HR.MVC.DHK.Controllers
 {
-    public class DesignationController : Controller
+    public class DesignationController : BaseController
     {
 
-
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
         private readonly ILogger<DesignationController> _logger;
 
-        public DesignationController(ApplicationDbContext context, ILogger<DesignationController> logger)
+        public DesignationController(IUnitOfWork unitOfWork, ILogger<DesignationController> logger):base(unitOfWork)
         {
-            _context = context;
             _logger = logger;
         }
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Designation.ToListAsync());
+            return View(await _unitOfWork.Designation.GetAllAsync());
         }
 
-        public IActionResult GetDesignations(Guid companyId)
+        public async Task<IActionResult> GetDesignations(Guid companyId, Guid dpartmentId)
         {
-            var designations = _context.Designation.Where(d => d.ComId == companyId).ToList();
+            var designations = await _unitOfWork.Designation.Where(d => d.ComId == companyId);
             return Json(designations);
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Companies = _context.Company.ToList();
+            ViewBag.Companies = await _unitOfWork.Company.GetAllAsync();
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(Designation data)
         {
-            Guid id = Guid.NewGuid();
-            data.DesigId = id;
+
             try
             {
-                _context.Designation.Add(data);
-                await _context.SaveChangesAsync();
+                await _unitOfWork.Designation.AddAsync(data);
+                _unitOfWork.Save();
             }
             catch (Exception ex)
             {
@@ -58,7 +56,7 @@ namespace HR.MVC.DHK.Controllers
 
         public IActionResult Edit(Guid DesigId, Guid ComId)
         {
-            var Designation = _context.Designation.Where(x => x.DesigId == DesigId).FirstOrDefault();
+            var Designation = _unitOfWork.Designation.Where(x => x.DesigId == DesigId);
             if (Designation != null)
             {
                 return View(Designation);
@@ -69,8 +67,6 @@ namespace HR.MVC.DHK.Controllers
             }
         }
 
- 
-       
        
         [HttpPost]
         public async Task<IActionResult> Edit(Designation data)
@@ -80,11 +76,8 @@ namespace HR.MVC.DHK.Controllers
             {
                 await Task.Run(async () =>
                 {
-                    _context.Designation.Update(data);
-
-                    _context.Entry(data).State = EntityState.Modified;
-
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.Designation.EditAsync(data);
+                    _unitOfWork.Save();
                 });
             }
             catch (Exception ex)
@@ -98,7 +91,7 @@ namespace HR.MVC.DHK.Controllers
         [HttpGet]
         public IActionResult DesignationDetails(Guid id)
         {
-            var Designation = _context.Designation.Find(id);
+            var Designation = _unitOfWork.Designation.Where(x => x.DesigId == id);
             if (Designation != null)
             {
                 return View(Designation);
@@ -110,6 +103,25 @@ namespace HR.MVC.DHK.Controllers
 
         }
 
+        public async Task<IActionResult> Delete(Guid Id)
+        {
+
+            try
+            {
+                await Task.Run(async () =>
+                {
+                    _unitOfWork.Designation.Remove(x => x.DesigId == Id);
+
+                    _unitOfWork.Save();
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+
+            return RedirectToAction("Index", "Employee");
+        }
 
     }
 }

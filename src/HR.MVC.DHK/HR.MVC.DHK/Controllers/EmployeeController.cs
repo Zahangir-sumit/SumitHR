@@ -8,55 +8,46 @@ namespace HR.MVC.DHK.Controllers
 {
     public class EmployeeController : BaseController
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
         private readonly ILogger<EmployeeController> _logger;
 
-        public EmployeeController(IUnitOfWork unitOfWork, ApplicationDbContext context, ILogger<EmployeeController> logger):base(unitOfWork)
+        public EmployeeController(IUnitOfWork unitOfWork,  ILogger<EmployeeController> logger):base(unitOfWork)
         {
-            _context = context;
+            //_context = context;
             _logger = logger;
         }
         public async Task<IActionResult> Index()
         {
-            //IList<Employee> ems= _unitOfWork.Employee.GetAll();
-            var employees = await _unitOfWork.Employee
-                                //.Include(c => c.Company)
-                                //.Include(d => d.Department)
-                                .GetAllAsync();
+            var employees = _unitOfWork.Employee.GetEmployees();
             return View(employees);
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> GetEmployees()
+        public async Task<IActionResult> GetEmployees(Guid companyId, Guid departmentId)
         {
-            var employees = await _unitOfWork.Employee.GetAllAsync();
+            var employees = await _unitOfWork.Employee.Where(x => x.ComId == companyId);
             return Json(employees);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            //ViewBag.Companies = _context.Company.ToList();
-            //ViewBag.Departments = _context.Department.ToList();
-            //ViewBag.Designations = _context.Designation.ToList();
-            //ViewBag.Shifts = _context.Shift.ToList();
 
-
-            ViewBag.CompanyList = _context.Company.ToList();
+            ViewBag.CompanyList = _unitOfWork.Company.GetAll();
 
             return View();
         }
 
+
         [HttpPost]
         public async Task<IActionResult> Create(Employee data)
         {
-            Guid id = Guid.NewGuid();
-            data.EmpId = id;
+
             try
             {
                 _unitOfWork.Employee.Add(data);
-                await _context.SaveChangesAsync();
+                _unitOfWork.Save();
             }
             catch (Exception ex)
             {
@@ -68,14 +59,15 @@ namespace HR.MVC.DHK.Controllers
 
         public async Task<IActionResult> Edit(Guid EmpId)
         {
-            var Employee = await _unitOfWork.Employee.Where(x => x.EmpId == EmpId);
+
+            var Employee =  _unitOfWork.Employee.FindWhere(x => x.EmpId == EmpId);
 
             if (Employee != null)
             {
-                ViewBag.Companies = _context.Company.ToList();
-                ViewBag.Departments = _context.Department.ToList();
-                ViewBag.Designations = _context.Designation.ToList();
-                ViewBag.Shifts = _context.Shift.ToList();
+                ViewBag.Companies = await _unitOfWork.Company.GetAllAsync();
+                ViewBag.Departments = await _unitOfWork.Department.GetAllAsync();
+                ViewBag.Designations = await _unitOfWork.Designation.GetAllAsync();
+                ViewBag.Shifts = await _unitOfWork.Shift.GetAllAsync();
                 return View(Employee);
             }
             else
@@ -92,11 +84,9 @@ namespace HR.MVC.DHK.Controllers
             {
                 await Task.Run(async () =>
                 {
-                    _context.Employee.Update(data);
+                    _unitOfWork.Employee.Edit(data);
 
-                    _context.Entry(data).State = EntityState.Modified;
-
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.Save();
                 });
             }
             catch (Exception ex)
@@ -126,6 +116,24 @@ namespace HR.MVC.DHK.Controllers
             }
 
         }
+        public async Task<IActionResult> Delete(Guid Id)
+        {
 
+            try
+            {
+                await Task.Run(async () =>
+                {
+                    _unitOfWork.Employee.Remove(x => x.EmpId == Id);
+
+                    _unitOfWork.Save();
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+
+            return RedirectToAction("Index", "Employee");
+        }
     }
 }

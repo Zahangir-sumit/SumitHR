@@ -8,7 +8,7 @@ namespace HR.MVC.DHK.Models
     public class Company
     {
         [Key]
-        public Guid ComId { get; set; }
+        public Guid ComId { get; set; } = Guid.NewGuid();
 
         [Required]
         [StringLength(50)]

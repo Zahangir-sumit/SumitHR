@@ -21,6 +21,23 @@ namespace HR.MVC.DHK
             builder.RegisterType<EmployeeRepository>().As<IEmployeeRepository>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<CompanyRepository>().As<ICompanyRepository>()
+                   .InstancePerLifetimeScope();
+
+            builder.RegisterType<DepartmentRepository>().As<IDepartmentRepository>()
+                   .InstancePerLifetimeScope();
+
+            builder.RegisterType<DesignationRepository>().As<IDesignationRepository>()
+                   .InstancePerLifetimeScope();
+
+            builder.RegisterType<ShiftRepository>().As<IShiftRepository>()
+                   .InstancePerLifetimeScope();
+
+            builder.RegisterType<AttendanceRepository>().As<IAttendanceRepository>()
+                   .InstancePerLifetimeScope();
+
+            builder.RegisterType<ReportRepository>().As<IReportRepository>()
+                   .InstancePerLifetimeScope();
             //builder.RegisterType<ApplicationDbContext>().As<IApplicationDbContext>()
             //    .InstancePerLifetimeScope();
 
