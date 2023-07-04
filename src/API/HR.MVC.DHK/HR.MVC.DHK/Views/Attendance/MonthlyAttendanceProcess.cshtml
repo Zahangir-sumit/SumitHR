@@ -1,0 +1,64 @@
+﻿@model HR.MVC.DHK.Models.MonthlyAttProcess
+
+@{
+    ViewData["Title"] = "Attendance Process";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Attendance Process</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="MonthlyAttendanceProcess" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+            <div class="form-group">
+                <label asp-for="ComId" class="control-label"></label>
+                @Html.DropDownListFor(model => model.ComId, new SelectList(ViewBag.Companies, "ComId", "ComName"), "Select Company", new { @class = "form-control", id = "companySelect" })
+                @Html.ValidationMessageFor(model => model.ComId, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label asp-for="DtYear" class="control-label"></label>
+                <input type="number" asp-for="DtYear" id="yearPicker" min="1900" max="2099" step="1" placeholder="Select Year" class="form-control">
+                <span asp-validation-for="DtYear" class="text-danger"></span>
+
+
+            </div>
+    <div class="form-group">
+        <label for="selectedMonth">Select a Month:</label>
+        <select class="form-control" id="selectedMonth" name="DtMonth" asp-for="DtMonth">
+            <option value="">-- Select Month --</option>
+            @foreach (var monthOption in ViewBag.MonthOptions)
+            {
+                <option value="@monthOption.Value" >@monthOption.Text</option>
+            }
+        </select>
+    </div>
+
+            <div class="form-group">
+                <input type="submit" value="Process" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        function selectYear() {
+            var year = document.getElementById("yearPicker").value;
+            // Use the selected year for further processing
+            console.log(year);
+        }
+    </script>
+}

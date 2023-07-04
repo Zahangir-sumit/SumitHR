@@ -1,0 +1,129 @@
+﻿@model HR.MVC.DHK.Models.Attendance
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Attendance</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ComId" class="control-label"></label>
+                @Html.DropDownListFor(model => model.ComId, new SelectList(ViewBag.Companies, "ComId", "ComName"), "Select Company", new { @class = "form-control", id = "companySelect" })
+                @Html.ValidationMessageFor(model => model.ComId, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.EmpId, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.EmpId, Enumerable.Empty<SelectListItem>(), "-- Select Employee --", new { @class = "form-control", id = "employeeSelect" })
+                    @Html.ValidationMessageFor(model => model.EmpId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DtDate" class="control-label"></label>
+                <input asp-for="DtDate" type="date" class="form-control" />
+                <span asp-validation-for="DtDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InTime" class="control-label"></label>
+                <input asp-for="InTime" class="form-control" />
+                <span asp-validation-for="InTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OutTime" class="control-label"></label>
+                <input asp-for="OutTime" class="form-control" />
+                <span asp-validation-for="OutTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Function to load departments based on selected company
+            function loadEmployees(companyId) {
+                $.ajax({
+                    url: '@Url.Action("GetEmployees", "Employee")',
+                    type: 'GET',
+                    data: { companyId: companyId },
+                    success: function (data) {
+                        var employeeSelect = $('#employeeSelect');
+                        employeeSelect.empty();
+                        employeeSelect.append($('<option/>').val('').text('-- Select Employee --'));
+                        $.each(data, function (index, item) {
+                            employeeSelect.append($('<option/>').val(item.empId).text(item.empName));
+                        });
+                    },
+                    error: function () {
+                        alert('Failed to retrieve employees.');
+                    }
+                });
+            }
+
+
+            // Function to load shifts based on selected company
+            function loadShifts(companyId) {
+                $.ajax({
+                    url: '@Url.Action("GetShifts", "Shift")',
+                    type: 'GET',
+                    data: { companyId: companyId },
+                    success: function (data) {
+                        var shiftSelect = $('#shiftSelect');
+                        shiftSelect.empty();
+                        shiftSelect.append($('<option/>').val('').text('-- Select Shift --'));
+                        $.each(data, function (index, item) {
+                            shiftSelect.append($('<option/>').val(item.shiftId).text(item.shiftName));
+                        });
+                    },
+                    error: function () {
+                        alert('Failed to retrieve shifts.');
+                    }
+                });
+            }
+
+            // Event handler for company select change
+            $('#companySelect').change(function () {
+                var companyId = $(this).val();
+                if (companyId) {
+                    loadEmployees(companyId);
+                    loadShifts(companyId); // Load shifts based on the selected company
+                } else {
+                    $('#employeeSelect').empty();
+                    $('#shiftSelect').empty();
+                }
+            });
+
+
+            // Event handler for company select change
+            $('#companySelect').change(function () {
+                var companyId = $(this).val();
+                if (companyId) {
+                    loadEmployees(companyId);
+                    loadShifts(companyId); // Load shifts based on the selected company
+                } else {
+                    $('#employeeSelect').empty();
+                    $('#shiftSelect').empty();
+                }
+            });
+        });
+    </script>
+}
