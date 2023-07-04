@@ -21,20 +21,14 @@ namespace HR.MVC.DHK.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            return View(await _unitOfWork.Designation.GetAllAsync());
+            return Ok(await _unitOfWork.Designation.GetAllAsync());
         }
 
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetDesignations(Guid companyId, Guid dpartmentId)
         {
             var designations = await _unitOfWork.Designation.Where(d => d.ComId == companyId);
-            return Json(designations);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Create()
-        {
-            ViewBag.Companies = await _unitOfWork.Company.GetAllAsync();
-            return View();
+            return Ok(designations);
         }
 
         [HttpPost]
@@ -51,19 +45,20 @@ namespace HR.MVC.DHK.Controllers
                 _logger.LogError(ex, ex.Message);
             }
 
-            return RedirectToAction("Index", "Designation");
+            return Ok();
         }
 
-        public IActionResult Edit(Guid DesigId, Guid ComId)
+        [HttpGet("{id:guid}")]
+        public IActionResult Edit(Guid DesigId)
         {
             var Designation = _unitOfWork.Designation.Where(x => x.DesigId == DesigId);
             if (Designation != null)
             {
-                return View(Designation);
+                return Ok(Designation);
             }
             else
             {
-                return View();
+                return Ok();
             }
         }
 
@@ -85,24 +80,25 @@ namespace HR.MVC.DHK.Controllers
                 _logger.LogError(ex, ex.Message);
             }
 
-            return RedirectToAction("Index", "Designation");
+            return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("{id:guid}")]
         public IActionResult DesignationDetails(Guid id)
         {
             var Designation = _unitOfWork.Designation.Where(x => x.DesigId == id);
             if (Designation != null)
             {
-                return View(Designation);
+                return Ok(Designation);
             }
             else
             {
-                return View();
+                return Ok();
             }
 
         }
 
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> Delete(Guid Id)
         {
 
@@ -120,7 +116,7 @@ namespace HR.MVC.DHK.Controllers
                 _logger.LogError(ex, ex.Message);
             }
 
-            return RedirectToAction("Index", "Employee");
+            return Ok();
         }
 
     }

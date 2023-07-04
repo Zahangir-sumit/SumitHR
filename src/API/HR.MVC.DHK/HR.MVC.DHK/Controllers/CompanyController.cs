@@ -18,21 +18,16 @@ namespace HR.MVC.DHK.Controllers
             //_context = context;
             _logger = logger;
         }
+        [HttpGet("GetAll")]
         public async Task<IActionResult> Index()
         {
-            return View(await _unitOfWork.Company.GetAllAsync());
+            return Ok(await _unitOfWork.Company.GetAllAsync());
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCompanies()
         {
-            return Json(await _unitOfWork.Company.GetAllAsync());
-        }
-
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
+            return Ok(await _unitOfWork.Company.GetAllAsync());
         }
 
         [HttpPost]
@@ -51,16 +46,17 @@ namespace HR.MVC.DHK.Controllers
             return RedirectToAction("Index", "Company");
         }
 
+        [HttpGet("{id:guid}")]
         public IActionResult Edit(Guid id)
         {
             var Company = _unitOfWork.Company.GetById(id);
             if (Company != null)
             {
-                return View(Company);
+                return Ok(Company);
             }
             else
             {
-                return View();
+                return BadRequest();
             }
         }
 
@@ -81,7 +77,7 @@ namespace HR.MVC.DHK.Controllers
                     _logger.LogError(ex, ex.Message);
                 }
 
-            return RedirectToAction("Index", "Company");
+            return Ok();
         }
 
     }

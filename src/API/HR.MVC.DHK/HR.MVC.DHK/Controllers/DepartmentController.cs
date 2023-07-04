@@ -23,34 +23,27 @@ namespace HR.MVC.DHK.Controllers
         {
             //list of department
            var data = await _unitOfWork.Department.GetAllAsync();
-            return View(data);
+            return Ok(data);
         }
-        public async Task<IActionResult> GetDepartments(Guid companyId)
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetDepartments()
         {
-            var departments = await _unitOfWork.Department.Where(d => d.ComId == companyId);
-            return Json(departments);
+            var departments = _unitOfWork.Department.GetAll();
+            return Ok(departments);
         }
-        //for testing view
+        //for testing Ok
 
-        [HttpGet]
+        [HttpGet("{id:guid}")]
         public IActionResult DetailsDepartment(Guid id)
         {
             var data = _unitOfWork.Department.Where(x => x.DeptId == id);
 
-            return View(data);
-        }
-
-        
-        public async Task<IActionResult> CreateDepartment()
-        {
-            ViewBag.Companies = await _unitOfWork.Company.GetAllAsync();
-
-            return View();
+            return Ok(data);
         }
 
 
         [HttpPost]
-        public ActionResult CreateDepartment(Department department)
+        public IActionResult Create(Department department)
         {
             try
             {
@@ -58,30 +51,31 @@ namespace HR.MVC.DHK.Controllers
                 _unitOfWork.Department.Add(department);
                 _unitOfWork.Save();
 
-                return RedirectToAction(nameof(Index));
+                return Ok();
 
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
             }
-            return RedirectToAction(nameof(Index));
+            return Ok();
 
         }
 
-        public async Task<IActionResult> EditDepartment(Guid id)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> Edit(Guid id)
         {
             try
             {
                var data = _unitOfWork.Department.FindWhere(x => x.DeptId == id);
-                ViewBag.Companies = await _unitOfWork.Company.GetAllAsync();
-                return View(data);
+                //OkBag.Companies = await _unitOfWork.Company.GetAllAsync();
+                return Ok(data);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
             }
-            return RedirectToAction(nameof(Index));
+            return Ok();
         }
 
 
@@ -94,20 +88,17 @@ namespace HR.MVC.DHK.Controllers
                 _unitOfWork.Department.Edit(department);
                 _unitOfWork.Save();
 
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
             catch(Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
             }
-            return RedirectToAction(nameof(Index));
+            return Ok();
 
         }
 
-        public IActionResult DeleteDepartment()
-        {
-            return View();
-        }
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> Delete(Guid Id)
         {
 
@@ -125,7 +116,7 @@ namespace HR.MVC.DHK.Controllers
                 _logger.LogError(ex, ex.Message);
             }
 
-            return RedirectToAction("Index", "Employee");
+            return Ok();
         }
 
     }

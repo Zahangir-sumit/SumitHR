@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HR.MVC.DHK.Controllers
 {
-    public class BaseController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BaseController : ControllerBase
     {
         protected readonly IUnitOfWork _unitOfWork;
 

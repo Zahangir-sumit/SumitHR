@@ -24,15 +24,15 @@ namespace HR.MVC.DHK.Controllers
         {
 
 
-            ViewBag.Companies = _unitOfWork.Company.GetAll();  
-            return View();
+            //OkBag.Companies = _unitOfWork.Company.GetAll();  
+            return Ok();
         }
 
         public IActionResult Create()
         {
 
-            ViewBag.Companies = _unitOfWork.Company.GetAll();
-            return View();
+            //OkBag.Companies = _unitOfWork.Company.GetAll();
+            return Ok();
         }
 
         [HttpPost]
@@ -57,24 +57,15 @@ namespace HR.MVC.DHK.Controllers
             }
 
 
-            return RedirectToAction("Index", "Attendance");
+            return Ok();
         }
-
-        public IActionResult AttendanceProcess()
-        {
-
-            ViewBag.Companies = _unitOfWork.Company.GetAll();
-
-            return View();
-        }
-
 
         [HttpPost]
         public async Task<IActionResult> AttendanceProcess(AttProcess attProcess)
         {
 
             await _unitOfWork.Attendance.Process(attProcess);
-            return RedirectToAction("Index", "Home");
+            return Ok();
         }
         public IActionResult MonthlyAttendanceProcess()
         {
@@ -86,11 +77,11 @@ namespace HR.MVC.DHK.Controllers
                 monthOptions.Add(new SelectListItem { Value = i.ToString(), Text = monthName });
             }
 
-            ViewBag.MonthOptions = monthOptions;
+            //OkBag.MonthOptions = monthOptions;
 
-            ViewBag.Companies = _unitOfWork.Company.GetAll();
+            //OkBag.Companies = _unitOfWork.Company.GetAll();
 
-            return View();
+            return Ok();
         }
 
         [HttpPost]
@@ -99,7 +90,7 @@ namespace HR.MVC.DHK.Controllers
 
             await _unitOfWork.Attendance.MonthlyProcess(monthlyAttProcess);
 
-            return RedirectToAction("Index", "Home");
+            return Ok();
         }
 
         [HttpPost]
@@ -171,14 +162,14 @@ namespace HR.MVC.DHK.Controllers
                         }
                         await _context.Attendance.AddRangeAsync(attendances);
                         await _context.SaveChangesAsync();
-                        TempData["Message"] = "Data Import Successfully";
-                        TempData["Status"] = "1";
+                        //TempData["Message"] = "Data Import Successfully";
+                        //TempData["Status"] = "1";
                     }
 
                     else
                     {
-                        TempData["Message"] = "Please, Select a file!";
-                        TempData["Status"] = "3";
+                        //TempData["Message"] = "Please, Select a file!";
+                        //TempData["Status"] = "3";
                     }
 
                 }
@@ -189,7 +180,7 @@ namespace HR.MVC.DHK.Controllers
                 }
             }
 
-            return View();
+            return Ok();
         }
 
         //private string preprocess(IFormFile file, string comid)

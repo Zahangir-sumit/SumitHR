@@ -22,87 +22,81 @@ namespace HR.MVC.DHK.Controllers
         {
             //list of department
             var data = await _unitOfWork.Shift.GetAllAsync();
-            return View(data);
+            return Ok(data);
         }
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetShifts(Guid companyId)
         {
             var designations = await _unitOfWork.Shift.Where(d => d.ComId == companyId);
-            return Json(designations);
+            return Ok(designations);
         }
 
-        //for testing view
+        //for testing Ok
 
-        [HttpGet]
+        [HttpGet("{id:guid}")]
         public IActionResult DetailsShift(Guid id)
         {
             var data = _unitOfWork.Shift.FindWhere(x => x.ShiftId == id);
 
-            return View(data);
-        }
-
-
-        public IActionResult CreateShift()
-        {
-            ViewBag.Companies = _unitOfWork.Company.GetAll();
-            return View();
+            return Ok(data);
         }
 
 
         [HttpPost]
-
         public async Task<IActionResult> CreateShift(Shift data)
         {
             try
             {
                 await _unitOfWork.Shift.AddAsync(data);
                 _unitOfWork.Save();
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
             catch
             {
-                return View();
+                return Ok();
             }
         }
 
-
+        [HttpGet("{id:guid}")]
         public IActionResult GetShift(Guid id)
         {
 
             _unitOfWork.Shift.FindWhere(x => x.ShiftId == id);
-            return View();
+            return Ok();
         }
 
+        [HttpGet("{id:guid}")]
         public IActionResult EditShift(Guid id)
         {
             try
             {
                 var data = _unitOfWork.Shift.FindWhere(x => x.ShiftId == id);
-                ViewBag.Companies = _unitOfWork.Company.GetAll();
-                return View(data);
+                //OkBag.Companies = _unitOfWork.Company.GetAll();
+                return Ok(data);
             }
             catch
             {
-                return View();
+                return Ok();
             }
         }
 
 
         [HttpPost]
-
         public IActionResult EditShift(Shift shift)
         {
             try
             {
                 _unitOfWork.Shift.Edit(shift);
                 _unitOfWork.Save();
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
             catch
             {
-                return View();
+                return Ok();
             }
         }
 
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> Delete(Guid Id)
         {
 
@@ -120,7 +114,7 @@ namespace HR.MVC.DHK.Controllers
                 _logger.LogError(ex, ex.Message);
             }
 
-            return RedirectToAction("Index", "Employee");
+            return Ok();
         }
 
     }

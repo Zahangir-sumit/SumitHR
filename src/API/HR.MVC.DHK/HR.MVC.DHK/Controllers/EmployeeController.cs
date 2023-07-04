@@ -19,24 +19,15 @@ namespace HR.MVC.DHK.Controllers
         public async Task<IActionResult> Index()
         {
             var employees = _unitOfWork.Employee.GetEmployees();
-            return View(employees);
+            return Ok(employees);
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetEmployees(Guid companyId, Guid departmentId)
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetEmployees(Guid companyId)
         {
             var employees = await _unitOfWork.Employee.Where(x => x.ComId == companyId);
-            return Json(employees);
-        }
-
-        [HttpGet]
-        public IActionResult Create()
-        {
-
-            ViewBag.CompanyList = _unitOfWork.Company.GetAll();
-
-            return View();
+            return Ok(employees);
         }
 
 
@@ -54,9 +45,10 @@ namespace HR.MVC.DHK.Controllers
                 _logger.LogError(ex, ex.Message);
             }
 
-            return RedirectToAction("Index", "Employee");
+            return Ok();
         }
 
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> Edit(Guid EmpId)
         {
 
@@ -64,15 +56,15 @@ namespace HR.MVC.DHK.Controllers
 
             if (Employee != null)
             {
-                ViewBag.Companies = await _unitOfWork.Company.GetAllAsync();
-                ViewBag.Departments = await _unitOfWork.Department.GetAllAsync();
-                ViewBag.Designations = await _unitOfWork.Designation.GetAllAsync();
-                ViewBag.Shifts = await _unitOfWork.Shift.GetAllAsync();
-                return View(Employee);
+                //ViewBag.Companies = await _unitOfWork.Company.GetAllAsync();
+                //ViewBag.Departments = await _unitOfWork.Department.GetAllAsync();
+                //ViewBag.Designations = await _unitOfWork.Designation.GetAllAsync();
+                //ViewBag.Shifts = await _unitOfWork.Shift.GetAllAsync();
+                return Ok(Employee);
             }
             else
             {
-                return View();
+                return Ok();
             }
         }
 
@@ -94,28 +86,29 @@ namespace HR.MVC.DHK.Controllers
                 _logger.LogError(ex, ex.Message);
             }
 
-            return RedirectToAction("Index", "Employee");
+            return Ok();
         }
 
         [HttpGet]
         public IActionResult Get(Guid id)
         {
-            return View();
+            return Ok();
         }
-        [HttpGet]
-        public IActionResult EmployeeDetails(Guid id)
-        {
-            var Employee = _context.Employee.Find(id);
-            if (Employee != null)
-            {
-                return View(Employee);
-            }
-            else
-            {
-                return View();
-            }
+        //[HttpGet]
+        //public IActionResult EmployeeDetails(Guid id)
+        //{
+        //    var Employee = _context.Employee.Find(id);
+        //    if (Employee != null)
+        //    {
+        //        return View(Employee);
+        //    }
+        //    else
+        //    {
+        //        return Ok();
+        //    }
 
-        }
+        //}
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> Delete(Guid Id)
         {
 
@@ -133,7 +126,7 @@ namespace HR.MVC.DHK.Controllers
                 _logger.LogError(ex, ex.Message);
             }
 
-            return RedirectToAction("Index", "Employee");
+            return Ok();
         }
     }
 }

@@ -28,15 +28,15 @@ namespace HR.MVC.DHK.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return Ok();
         }
 
 
         public IActionResult SalaryReport()
         {
 
-            ViewBag.Companies = _context.Company.ToList();
-            return View();
+            //ViewBag.Companies = _context.Company.ToList();
+            return Ok();
         }
 
 
@@ -61,7 +61,7 @@ namespace HR.MVC.DHK.Controllers
 
             var SalaryList = await _unitOfWork.Report.SalaryReportView(salaryRptDTO);
 
-            return View(SalaryList);
+            return Ok(SalaryList);
         }
 
 
@@ -71,13 +71,13 @@ namespace HR.MVC.DHK.Controllers
 
             var SalarySummaries = await _unitOfWork.Report.SalarySummaryReportView(salaryRptDTO);
 
-            return View(SalarySummaries);
+            return Ok(SalarySummaries);
         }
         public IActionResult AttendanceReport()
         {
 
-            ViewBag.Companies = _unitOfWork.Company.GetAll();
-            return View();
+            //ViewBag.Companies = _unitOfWork.Company.GetAll();
+            return Ok();
         }
 
         [HttpPost]
@@ -98,7 +98,7 @@ namespace HR.MVC.DHK.Controllers
 
             var DailyAttendances = await _unitOfWork.Report.DailyAttendtanceReport(AttendanceParameters);
 
-            return View(DailyAttendances);
+            return Ok(DailyAttendances);
         }
 
 
@@ -108,7 +108,7 @@ namespace HR.MVC.DHK.Controllers
 
             var MonthlyAttendances = await _unitOfWork.Report.MonthlyAttendtanceReport(AttendanceParameters);
 
-            return View(MonthlyAttendances);
+            return Ok(MonthlyAttendances);
         }
 
     }
