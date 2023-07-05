@@ -1,0 +1,24 @@
+﻿@model HR.MVC.DHK.Models.Shift
+
+@{
+    ViewData["Title"] = "Delete Shift";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2>Delete Shift</h2>
+
+    <h4>Are you sure you want to delete this department?</h4>
+    <div>
+        <h5>Shift Name:</h5>
+        <p>@Model.ShiftName</p>
+    </div>
+
+    @using (Html.BeginForm("Delete", "Shift", new { id = Model.ShiftId }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ShiftId)
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="@Url.Action("Index", "Department")" class="btn btn-secondary">Cancel</a>
+    }
+</div>

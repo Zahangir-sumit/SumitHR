@@ -5,6 +5,7 @@ using HR.MVC.DHK.RepositoryPattern;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Net.Http;
 
 namespace HR.MVC.DHK.Controllers
 {
@@ -19,19 +20,15 @@ namespace HR.MVC.DHK.Controllers
             _logger = logger;
         }
         [HttpGet("GetAll")]
+        //[Route("GetAll")]
         public async Task<IActionResult> Index()
         {
             return Ok(await _unitOfWork.Company.GetAllAsync());
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetCompanies()
-        {
-            return Ok(await _unitOfWork.Company.GetAllAsync());
-        }
-
         [HttpPost]
-        public async Task<IActionResult> Create(Company data)
+        [Route("Create")]
+        public async Task<IActionResult> Create([FromBody]Company data)
         {
                 try
                 {
@@ -43,11 +40,12 @@ namespace HR.MVC.DHK.Controllers
                     _logger.LogError(ex, ex.Message);
                 }
 
-            return RedirectToAction("Index", "Company");
+            return Ok();
         }
 
-        [HttpGet("{id:guid}")]
-        public IActionResult Edit(Guid id)
+        [HttpGet]
+        [Route("GetById/{id:guid}")]
+        public IActionResult GetById(Guid id)
         {
             var Company = _unitOfWork.Company.GetById(id);
             if (Company != null)
@@ -60,8 +58,9 @@ namespace HR.MVC.DHK.Controllers
             }
         }
 
-        [HttpPost]  
-        public async Task<IActionResult> Edit(Company data)
+        [HttpPost]
+        [Route("Edit")]
+        public async Task<IActionResult> Edit([FromBody]Company data)
         {
 
                 try

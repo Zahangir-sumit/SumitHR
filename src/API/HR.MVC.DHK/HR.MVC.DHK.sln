@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HR.MVC.DHK", "HR.MVC.DHK\HR.MVC.DHK.csproj", "{E64891CD-6C1F-4C0C-ADAF-5D12A54EA72B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HR.MVC.DHK", "HR.MVC.DHK\HR.MVC.DHK.csproj", "{E64891CD-6C1F-4C0C-ADAF-5D12A54EA72B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HR.UI", "HR.UI\HR.UI.csproj", "{6C22D585-478E-4B1B-9981-6CFE5942D5B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{E64891CD-6C1F-4C0C-ADAF-5D12A54EA72B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E64891CD-6C1F-4C0C-ADAF-5D12A54EA72B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E64891CD-6C1F-4C0C-ADAF-5D12A54EA72B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C22D585-478E-4B1B-9981-6CFE5942D5B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C22D585-478E-4B1B-9981-6CFE5942D5B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C22D585-478E-4B1B-9981-6CFE5942D5B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C22D585-478E-4B1B-9981-6CFE5942D5B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

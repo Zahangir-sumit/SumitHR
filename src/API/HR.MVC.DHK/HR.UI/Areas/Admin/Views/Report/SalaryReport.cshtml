@@ -1,0 +1,164 @@
+﻿@model HR.MVC.DHK.Models.DTO.SalaryRptDTO
+
+@{
+    ViewData["Title"] = "Attendance Process";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Salary Report</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Report" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label for="ComId">Company:</label>
+                @Html.DropDownListFor(model => model.ComId, new SelectList(ViewBag.Companies, "ComId", "ComName"), "Select Company", new { @class = "form-control", id = "companySelect" })
+                @Html.ValidationMessageFor(model => model.ComId, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.DeptId, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.DeptId, Enumerable.Empty<SelectListItem>(), "-- Select Department --", new { @class = "form-control", id = "departmentSelect" })
+                    @Html.ValidationMessageFor(model => model.DeptId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.DesigId, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.DesigId, Enumerable.Empty<SelectListItem>(), "-- Select Designation --", new { @class = "form-control", id = "designationSelect" })
+                    @Html.ValidationMessageFor(model => model.DesigId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" type="date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="Gender">Type</label>
+                    <div class="col-md-4">
+                        <div class="radio">
+                            <label>
+                            <input type="radio" id="Type" name="Type" value="List" @* @(Model.Gender == "Male" ? "checked" : "") *@ /> List
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                            <input type="radio" id="Type" name="Type" value="Summary" @* @(Model.Gender == "Female" ? "checked" : "") *@ /> Summary
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="IsPaid" /> Is Paid
+                    </label>
+                </div>
+            </div>
+@*            <div class="form-group">
+                <label for="selectedMonth">Type</label>
+                <select class="form-control" id="selectedMonth" name="DtMonth" asp-for="Type">
+                    <option value="">-- Select Month --</option>
+                    @foreach (var monthOption in ViewBag.MonthOptions)
+                    {
+                        <option value="@monthOption.Value">@monthOption.Text</option>
+                    }
+                </select>
+            </div>*@
+
+            <div class="form-group">
+                <input type="submit" value="Process" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script>
+  
+            $(document).ready(function () {
+                // Function to load departments based on selected company
+                function loadDepartments(companyId) {
+                    $.ajax({
+                        url: '@Url.Action("GetDepartments", "Department")',
+                        type: 'GET',
+                        data: { companyId: companyId },
+                        success: function (data) {
+                            var departmentSelect = $('#departmentSelect');
+                            departmentSelect.empty();
+                            departmentSelect.append($('<option/>').val('').text('-- Select Department --'));
+                            $.each(data, function (index, item) {
+                                departmentSelect.append($('<option/>').val(item.deptId).text(item.deptName));
+                            });
+                        },
+                        error: function () {
+                            alert('Failed to retrieve departments.');
+                        }
+                    });
+                }
+
+                // Function to load designations based on selected department
+                function loadDesignations(companyId, departmentId) {
+                    $.ajax({
+                        url: '@Url.Action("GetDesignations", "Designation")',
+                        type: 'GET',
+                        data: { companyId: companyId, departmentId: departmentId },
+                        success: function (data) {
+                            var designationSelect = $('#designationSelect');
+                            designationSelect.empty();
+                            designationSelect.append($('<option/>').val('').text('-- Select Designation --'));
+                            $.each(data, function (index, item) {
+                                designationSelect.append($('<option/>').val(item.desigId).text(item.desigName));
+                            });
+                        },
+                        error: function () {
+                            alert('Failed to retrieve designations.');
+                        }
+                    });
+                }
+
+                // Event handler for company select change
+                $('#companySelect').change(function () {
+                    var companyId = $(this).val();
+                    if (companyId) {
+                        loadDepartments(companyId);
+ // Load shifts based on the selected company
+                    } else {
+                        $('#departmentSelect').empty();
+                        $('#designationSelect').empty();
+                        $('#shiftSelect').empty();
+                    }
+                });
+
+                // Event handler for department select change
+                $('#departmentSelect').change(function () {
+                    var companyId = $('#companySelect').val();
+                    var departmentId = $(this).val();
+                    if (departmentId) {
+                        loadDesignations(companyId, departmentId); // Load designations based on the selected department
+                    } else {
+                        $('#designationSelect').empty();
+                    }
+                });
+            });
+    </script>
+}

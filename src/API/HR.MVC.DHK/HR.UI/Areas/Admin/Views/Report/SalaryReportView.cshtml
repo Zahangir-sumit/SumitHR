@@ -1,0 +1,51 @@
+﻿@model List<HR.MVC.DHK.Models.VM.SalaryReport>
+
+@{
+    ViewData["Title"] = "Salary Report";
+}
+
+<h1>Salary Report</h1>
+
+<div class="container-fluid">
+    <table class="table table-striped">
+        <thead>
+            <tr class="bg-warning">
+                <th>Employee Code</th>
+                <th>Employee Name</th>
+                <th>Department Name</th>
+                <th>Designation Name</th>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Gross</th>
+                <th>Basic</th>
+                <th>House Rent</th>
+                <th>Medical</th>
+                <th>Absent Amount</th>
+                <th>Payable Amount</th>
+                <th>Paid Amount</th>
+                <th>Is Paid</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.EmpCode</td>
+                    <td>@item.EmpName</td>
+                    <td>@item.DeptName</td>
+                    <td>@item.DesigName</td>
+                    <td>@item.dtYear</td>
+                    <td>@item.dtMonth</td>
+                    <td>@item.Gross</td>
+                    <td>@item.Basic</td>
+                    <td>@item.Hrent</td>
+                    <td>@item.Medical</td>
+                    <td>@item.AbsentAmount</td>
+                    <td>@item.PayableAmount</td>
+                    <td>@item.PaidAmount</td>
+                    <td>@item.IsPaid</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
