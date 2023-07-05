@@ -1,0 +1,37 @@
+﻿@model List<HR.MVC.DHK.Models.VM.DailyAttendance>
+
+@{
+    ViewData["Title"] = "Daily Attendance Report";
+}
+
+<div class="container">
+
+    <h1>Daily Attendance Report</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Employee Code</th>
+            <th>Employee Name</th>
+            <th>Department</th>
+            <th>Date</th>
+            <th>Attendance Status</th>
+            <th>In Time</th>
+            <th>Out Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.EmpCode</td>
+                <td>@item.EmpName</td>
+                <td>@item.DeptName</td>
+                <td>@item.dtDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.AttStatus</td>
+                <td>@(item.InTime.HasValue ? item.InTime.Value.ToString("hh\\:mm") : "")</td>
+                <td>@(item.OutTime.HasValue ? item.OutTime.Value.ToString("hh\\:mm") : "")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
