@@ -1,0 +1,33 @@
+﻿@model List<HR.MVC.DHK.Models.Designation>
+
+@{
+    ViewData["Title"] = "Designation List";
+}
+
+<h1>Designation List</h1>
+
+<div class="container">
+    <a asp-action="Create" class="btn btn-primary">Create</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Designation Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Designation in Model)
+            {
+                <tr>
+                    <td>@Designation.DesigName</td>
+
+                    <td>
+                        <a href="@Url.Action("Edit", new { Id = Designation.DesigId })" class="btn btn-primary">Edit</a>
+                        <a href="@Url.Action("Delete", "Department", new { Id = Designation.DesigId })" class="btn btn-danger">Delete</a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

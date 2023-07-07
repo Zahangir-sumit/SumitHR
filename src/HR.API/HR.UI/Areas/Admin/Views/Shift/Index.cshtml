@@ -1,0 +1,40 @@
+﻿@model IEnumerable<HR.MVC.DHK.Models.Shift>
+
+@*@{
+    ViewData["Title"] = "Department List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+
+<div class="container">
+    <h2>Shift List</h2>
+
+    <table class="table">
+
+        <a href="@Url.Action("Create", "Shift")" class="btn btn-primary">Create New Shift</a>
+        <thead>
+            <tr>
+                <th>Shift Name</th>
+                <th>Shift In</th>
+                <th>Shift Out</th>
+                <th>Shift Late</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var shift in Model)
+            {
+                <tr>
+                    <td>@shift.ShiftName</td>
+                    <td>@shift.ShiftIn</td>
+                    <td>@shift.ShiftOut</td>
+                    <td>@shift.ShiftLate</td>
+                    <td>
+                        <a href="@Url.Action("Edit", "Shift", new { Id = shift.ShiftId })" class="btn btn-primary">Edit</a>
+                        <a href="@Url.Action("Delete", "Shift", new { Id = shift.ShiftId })" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

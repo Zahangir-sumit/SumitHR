@@ -19,25 +19,20 @@ namespace HR.MVC.DHK.Controllers
         {
             _logger = logger;
         }
+        [HttpGet("GetAll")]
+        //[Route("GetAll")]
         public async Task<IActionResult> Index()
         {
             return Ok(await _unitOfWork.Designation.GetAllAsync());
         }
 
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetDesignations(Guid companyId, Guid dpartmentId)
-        {
-            var designations = await _unitOfWork.Designation.Where(d => d.ComId == companyId);
-            return Ok(designations);
-        }
-
         [HttpPost]
-        public async Task<IActionResult> Create(Designation data)
+        [Route("Create")]
+        public async Task<IActionResult> Create([FromBody] Designation data)
         {
-
             try
             {
-                await _unitOfWork.Designation.AddAsync(data);
+                _unitOfWork.Designation.Add(data);
                 _unitOfWork.Save();
             }
             catch (Exception ex)
@@ -48,28 +43,29 @@ namespace HR.MVC.DHK.Controllers
             return Ok();
         }
 
-        [HttpGet("{id:guid}")]
-        public IActionResult Edit(Guid DesigId)
+        [HttpGet]
+        [Route("GetById/{id:guid}")]
+        public IActionResult GetById(Guid id)
         {
-            var Designation = _unitOfWork.Designation.Where(x => x.DesigId == DesigId);
+            var Designation = _unitOfWork.Designation.GetById(id);
             if (Designation != null)
             {
                 return Ok(Designation);
             }
             else
             {
-                return Ok();
+                return BadRequest();
             }
         }
 
-       
         [HttpPost]
-        public async Task<IActionResult> Edit(Designation data)
+        [Route("Edit")]
+        public async Task<IActionResult> Edit([FromBody] Designation data)
         {
 
             try
             {
-                await Task.Run(async () =>
+                await Task.Run(() =>
                 {
                     _unitOfWork.Designation.EditAsync(data);
                     _unitOfWork.Save();
@@ -81,21 +77,6 @@ namespace HR.MVC.DHK.Controllers
             }
 
             return Ok();
-        }
-
-        [HttpGet("{id:guid}")]
-        public IActionResult DesignationDetails(Guid id)
-        {
-            var Designation = _unitOfWork.Designation.Where(x => x.DesigId == id);
-            if (Designation != null)
-            {
-                return Ok(Designation);
-            }
-            else
-            {
-                return Ok();
-            }
-
         }
 
         [HttpGet("{id:guid}")]

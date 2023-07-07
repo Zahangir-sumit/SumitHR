@@ -1,0 +1,154 @@
+﻿@model HR.MVC.DHK.Models.DTO.AttendanceParameters
+
+@{
+    ViewData["Title"] = "Create Attendance";
+}
+<div class="container">
+
+
+<h2>Attendance Report</h2>
+
+    <form asp-action="AttendtanceReportView" method="post">
+            <div class="form-group">
+                <label for="ComId">Company:</label>
+                @Html.DropDownListFor(model => model.ComId, new SelectList(ViewBag.Companies, "ComId", "ComName"), "Select Company", new { @class = "form-control", id = "companySelect" })
+                @Html.ValidationMessageFor(model => model.ComId, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.DepartmentID, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                @Html.DropDownListFor(model => model.DepartmentID, Enumerable.Empty<SelectListItem>(), "-- Select Department --", new { @class = "form-control", id = "departmentSelect" })
+                @Html.ValidationMessageFor(model => model.DepartmentID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.EmpId, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.EmpId, Enumerable.Empty<SelectListItem>(), "-- Select Employee --", new { @class = "form-control", id = "employeeSelect" })
+                @Html.ValidationMessageFor(model => model.EmpId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" type="date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+
+    <div class="form-group">
+        <label for="AttendanceType">Attendance Type</label><br />
+        <label class="radio-inline">
+            <input type="radio" name="AttendanceType" value="Daily" checked /> Daily
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="AttendanceType" value="Monthly" /> Monthly
+        </label>
+    </div>
+    <div class="form-group">
+        <label for="AttStatus">Attendance Status</label><br />
+        <select id="AttStatus" name="AttStatus" class="form-control">
+            <option value="All" selected>All</option>
+            <option value="P" >Present</option>
+            <option value="A">Absent</option>
+            <option value="L">Late</option>
+            <option value="W">Weekend</option>
+        </select>
+    </div>
+@*    <div class="form-group">
+        <label for="DepartmentID">Department</label><br />
+        <select id="DepartmentID" name="DepartmentID" class="form-control">
+            <option value="">Select Department</option>
+            @foreach (var department in ViewBag.Departments)
+            {
+                <option value="@department.DepartmentID">@department.DepartmentName</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="EmpId">Employee</label><br />
+        <select id="EmpId" name="EmpId" class="form-control">
+            <option value="">Select Employee</option>
+            @foreach (var employee in ViewBag.Employees)
+            {
+                <option value="@employee.EmpId">@employee.EmpName</option>
+            }
+        </select>
+    </div>*@
+    <button type="submit" class="btn btn-primary">Generate Report</button>
+</form>
+
+</div>
+
+
+
+@section Scripts {
+<script>
+
+    $(document).ready(function () {
+        // Function to load departments based on selected company
+        function loadDepartments(companyId) {
+            $.ajax({
+                url: '@Url.Action("GetDepartments", "Department")',
+                type: 'GET',
+                data: { companyId: companyId },
+                success: function (data) {
+                    var departmentSelect = $('#departmentSelect');
+                    departmentSelect.empty();
+                    departmentSelect.append($('<option/>').val('').text('-- Select Department --'));
+                    $.each(data, function (index, item) {
+                        departmentSelect.append($('<option/>').val(item.deptId).text(item.deptName));
+                    });
+                },
+                error: function () {
+                    alert('Failed to retrieve departments.');
+                }
+            });
+        }
+
+        // Function to load designations based on selected department
+        function loadEmployees(companyId, departmentId) {
+            $.ajax({
+                url: '@Url.Action("GetEmployees", "Employee")',
+                type: 'GET',
+                data: { companyId: companyId, departmentId: departmentId },
+                success: function (data) {
+                    var employeeSelect = $('#employeeSelect');
+                        employeeSelect.empty();
+                        employeeSelect.append($('<option/>').val('').text('-- Select Employee --'));
+                    $.each(data, function (index, item) {
+                            employeeSelect.append($('<option/>').val(item.empId).text(item.empName));
+                    });
+                },
+                error: function () {
+                    alert('Failed to retrieve designations.');
+                }
+            });
+        }
+
+        // Event handler for company select change
+        $('#companySelect').change(function () {
+            var companyId = $(this).val();
+            if (companyId) {
+                loadDepartments(companyId);
+                // Load shifts based on the selected company
+            } else {
+                $('#departmentSelect').empty();
+                $('#employeeSelect').empty();
+            }
+        });
+
+        // Event handler for department select change
+        $('#departmentSelect').change(function () {
+            var companyId = $('#companySelect').val();
+            var departmentId = $(this).val();
+            if (departmentId) {
+                loadEmployees(companyId, departmentId); // Load employees based on the selected department
+            } else {
+                $('#employeeSelect').empty();
+            }
+        });
+    });
+</script>
+}

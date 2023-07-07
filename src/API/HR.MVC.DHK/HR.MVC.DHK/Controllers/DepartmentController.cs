@@ -19,83 +19,64 @@ namespace HR.MVC.DHK.Controllers
             _logger = logger;
         }
 
-        public async  Task<IActionResult> Index()
-        {
-            //list of department
-           var data = await _unitOfWork.Department.GetAllAsync();
-            return Ok(data);
-        }
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetDepartments()
+        //[Route("GetAll")]
+        public async Task<IActionResult> Index()
         {
-            var departments = _unitOfWork.Department.GetAll();
-            return Ok(departments);
+            return Ok(await _unitOfWork.Department.GetAllAsync());
         }
-        //for testing Ok
-
-        [HttpGet("{id:guid}")]
-        public IActionResult DetailsDepartment(Guid id)
-        {
-            var data = _unitOfWork.Department.Where(x => x.DeptId == id);
-
-            return Ok(data);
-        }
-
 
         [HttpPost]
-        public IActionResult Create(Department department)
+        [Route("Create")]
+        public async Task<IActionResult> Create([FromBody] Department data)
         {
             try
             {
-
-                _unitOfWork.Department.Add(department);
+                _unitOfWork.Department.Add(data);
                 _unitOfWork.Save();
-
-                return Ok();
-
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
             }
-            return Ok();
 
+            return Ok();
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> Edit(Guid id)
+        [HttpGet]
+        [Route("GetById/{id:guid}")]
+        public IActionResult GetById(Guid id)
         {
+            var Department = _unitOfWork.Department.GetById(id);
+            if (Department != null)
+            {
+                return Ok(Department);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        [Route("Edit")]
+        public async Task<IActionResult> Edit([FromBody] Department data)
+        {
+
             try
             {
-               var data = _unitOfWork.Department.FindWhere(x => x.DeptId == id);
-                //OkBag.Companies = await _unitOfWork.Company.GetAllAsync();
-                return Ok(data);
+                await Task.Run(() =>
+                {
+                    _unitOfWork.Department.EditAsync(data);
+                    _unitOfWork.Save();
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
             }
+
             return Ok();
-        }
-
-
-        [HttpPost]
-        public IActionResult EditDepartment(Department department)
-        {
-            try
-            {
-
-                _unitOfWork.Department.Edit(department);
-                _unitOfWork.Save();
-
-                return Ok();
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-            }
-            return Ok();
-
         }
 
         [HttpGet("{id:guid}")]

@@ -1,0 +1,53 @@
+﻿@model HR.MVC.DHK.Models.Shift
+
+@{
+    ViewData["Title"] = "Edit Shift";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2>Edit Shift</h2>
+
+    @using (Html.BeginForm("Edit", "Shift", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <label for="ComId">Company:</label>
+            @Html.DropDownListFor(model => model.ComId, new SelectList(ViewBag.Companies, "ComId", "ComName"), "Select Company", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.ComId, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.HiddenFor(model => model.ShiftId) <!-- Add hidden field for DeptId -->
+            <label for="ShiftName">Shift Name:</label>
+            @Html.TextBoxFor(model => model.ShiftName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.ShiftName, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            <label for="ShiftIn">Shift In:</label>
+            @Html.TextBoxFor(model => model.ShiftIn, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.ShiftIn, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            <label for="ShiftOut">Shift Out:</label>
+            @Html.TextBoxFor(model => model.ShiftOut, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.ShiftOut, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            <label for="ShiftName">Shift Name:</label>
+            @Html.TextBoxFor(model => model.ShiftLate, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.ShiftOut, "", new { @class = "text-danger" })
+        </div>
+
+        @*<div class="form-group">
+    <label for="ComId">Company:</label>
+    @Html.DropDownListFor(model => model.ComId, new SelectList(ViewBag.Companies, "ComId", "ComName"), "Select Company", new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.ComId, "", new { @class = "text-danger" })
+    </div>*@
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="@Url.Action("Index", "Shift")" class="btn btn-secondary">Cancel</a>
+    }
+</div>
